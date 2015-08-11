@@ -2,6 +2,7 @@
 <resources>
     <!-- Common colors -->
     <color name="white">#FFF</color>
+    <color name="black">#000</color>
 
 
     <!-- App Theme -->
