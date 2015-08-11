@@ -1,9 +1,14 @@
 package me.zujko.locchat;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,6 +16,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //Checks if GPS is enabled
+        if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //Continue
+        } else {
+            createNoGpsAlert();
+        }
     }
 
     @Override
@@ -33,5 +47,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Creates an alert dialog alerting the user that they must enable location services.
+     */
+    private void createNoGpsAlert() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.error_title_gps_disabled))
+                .setMessage(getString(R.string.error_message_gps_disabled))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+        .setCancelable(false);
+
+        AlertDialog mNoGpsAlertDialog = builder.create();
+        mNoGpsAlertDialog.show();
     }
 }

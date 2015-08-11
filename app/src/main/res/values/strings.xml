@@ -2,4 +2,12 @@
     <string name="app_name">LocChat</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Error Strings -->
+    <string name="error.message.gps.disabled">GPS is disabled. GPS is required to use LocChat. \nWould you like to enable it now? </string>
+    <string name="error.title.gps.disabled">Enable Location Services</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>
