@@ -1,8 +1,10 @@
-package me.zujko.locchat;
+package me.zujko.locchat.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import me.zujko.locchat.R;
+import me.zujko.locchat.fragments.ChatroomFragment;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +28,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Checks if GPS is enabled
         if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            //Continue
+            if(savedInstanceState != null) {
+                currentFragment = getSupportFragmentManager().getFragment(savedInstanceState,"fragment");
+            } else {
+                currentFragment = new ChatroomFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.chatroom_fragment_container, currentFragment).commit();
+            }
         } else {
             createNoGpsAlert();
         }
