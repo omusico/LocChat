@@ -3,6 +3,7 @@ package me.zujko.locchat.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import butterknife.Bind;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment currentFragment;
     @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.fab) FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,15 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentFragment instanceof ChatroomFragment) {
+                    startActivity(new Intent(getApplicationContext(), NewChatroomActivity.class));
+                }
+            }
+        });
 
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -44,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             createNoGpsAlert();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "fragment", currentFragment);
     }
 
     @Override

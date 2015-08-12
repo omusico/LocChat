@@ -8,6 +8,5 @@
     <!-- App Theme -->
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
-    <color name="secondary">#FFD740</color>
-    <color name="secondary_dark">#FFC400</color>
+    <color name="secondary">#FF5252</color>
 </resources>
