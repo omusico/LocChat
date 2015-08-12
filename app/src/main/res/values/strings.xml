@@ -10,4 +10,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="title_activity_new_chatroom">NewChatroomActivity</string>
+
+    <string name="hint.name">Name</string>
+    <string name="btn.create">Create Room</string>
 </resources>
