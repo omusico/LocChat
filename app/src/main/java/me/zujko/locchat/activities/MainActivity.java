@@ -8,21 +8,28 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import me.zujko.locchat.R;
 import me.zujko.locchat.fragments.ChatroomFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private Fragment currentFragment;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
 
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
