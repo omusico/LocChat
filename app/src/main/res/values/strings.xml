@@ -2,6 +2,7 @@
     <string name="app_name">LocChat</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_location_settings">Location Settings</string>
 
     <!-- Error Strings -->
     <string name="error.message.gps.disabled">GPS is disabled. GPS is required to use LocChat. \nWould you like to enable it now? </string>
@@ -13,4 +14,9 @@
 
     <string name="hint.name">Name</string>
     <string name="btn.create">Create Room</string>
+
+    <!-- Fragment names -->
+    <string name="fragment.name.Location">Location</string>
+
+    <string name="title.chatroom">Chatrooms</string>
 </resources>

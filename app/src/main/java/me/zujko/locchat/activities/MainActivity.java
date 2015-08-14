@@ -3,22 +3,21 @@ package me.zujko.locchat.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.zujko.locchat.R;
 import me.zujko.locchat.fragments.ChatroomFragment;
+import me.zujko.locchat.fragments.LocationFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,9 +29,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(getString(R.string.title_chatroom));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = getSupportFragmentManager().getFragment(savedInstanceState,"fragment");
             } else {
                 currentFragment = new ChatroomFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.chatroom_fragment_container, currentFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).commit();
             }
         } else {
             createNoGpsAlert();
@@ -78,12 +79,26 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                //Do something
+                return true;
+            case R.id.action_location_settings:
+                currentFragment = new LocationFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment).addToBackStack(null).commit();
+                getSupportActionBar().setTitle(getString(R.string.fragment_name_Location));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void onBackPressed() {
+        if(currentFragment instanceof LocationFragment) {
+            getSupportActionBar().setTitle(getString(R.string.title_chatroom));
+        }
+        super.onBackPressed();
     }
 
     /**
