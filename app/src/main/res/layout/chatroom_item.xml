@@ -23,6 +23,7 @@
 
     <TextView
         android:id="@+id/chatroom_users"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

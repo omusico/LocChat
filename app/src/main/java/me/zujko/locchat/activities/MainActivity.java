@@ -2,6 +2,8 @@ package me.zujko.locchat.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,14 +18,17 @@ import android.view.View;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.zujko.locchat.R;
+import me.zujko.locchat.Utils;
 import me.zujko.locchat.fragments.ChatroomFragment;
 import me.zujko.locchat.fragments.LocationFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener{
 
-    private Fragment currentFragment;
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.fab) FloatingActionButton mFab;
+
+    private Fragment currentFragment;
+    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //Checks if GPS is enabled
         if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -60,9 +65,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utils.TEN_MINUTES, 200, this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mLocationManager.removeUpdates(this);
+        super.onPause();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "fragment", currentFragment);
+        if(currentFragment != null) {
+            getSupportFragmentManager().putFragment(outState, "fragment", currentFragment);
+        }
     }
 
     @Override
@@ -126,4 +145,20 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog mNoGpsAlertDialog = builder.create();
         mNoGpsAlertDialog.show();
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if(Utils.isBetterLocation(location, Utils.CURRENT_LOCATION)) {
+            Utils.CURRENT_LOCATION = location;
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+    @Override
+    public void onProviderEnabled(String provider) {}
+
+    @Override
+    public void onProviderDisabled(String provider) {}
 }
