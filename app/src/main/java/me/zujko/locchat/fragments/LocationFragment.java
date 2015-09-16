@@ -15,17 +15,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.zujko.locchat.R;
 import me.zujko.locchat.Utils;
 
-public class LocationFragment extends Fragment {
+public class LocationFragment extends Fragment implements DiscreteSeekBar.OnProgressChangeListener {
 
     @Bind(R.id.mapview) MapView mMapView;
+    @Bind(R.id.radius_seekbar) DiscreteSeekBar mSeekbar;
+    Circle mCircleRadius;
 
     private GoogleMap mGoogleMap;
 
@@ -33,6 +39,7 @@ public class LocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_location, container, false);
         ButterKnife.bind(this, rootView);
+        mSeekbar.setOnProgressChangeListener(this);
 
         createMap(savedInstanceState);
 
@@ -65,11 +72,13 @@ public class LocationFragment extends Fragment {
 
     private void createMap(Bundle savedInstanceState) {
         mMapView.onCreate(savedInstanceState);
+        LatLng currLocation = new LatLng(Utils.CURRENT_LOCATION.getLatitude(), Utils.CURRENT_LOCATION.getLongitude());
         mGoogleMap = mMapView.getMap();
         MapsInitializer.initialize(getActivity());
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(Utils.CURRENT_LOCATION.getLatitude(), Utils.CURRENT_LOCATION.getLongitude())));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(Utils.CURRENT_LOCATION.getLatitude(), Utils.CURRENT_LOCATION.getLongitude()), 11);
+        mGoogleMap.addMarker(new MarkerOptions().position(currLocation));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currLocation, 11);
         mGoogleMap.animateCamera(cameraUpdate);
+        mCircleRadius = mGoogleMap.addCircle(new CircleOptions().center(currLocation).radius(1000));
     }
 
     private void setLocation() {
@@ -80,10 +89,25 @@ public class LocationFragment extends Fragment {
                 if(lastLocation != null) {
                     Utils.CURRENT_LOCATION = lastLocation;
                 } else {
-                    Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                    Utils.CURRENT_LOCATION = location;
+                    Utils.CURRENT_LOCATION = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
                 }
             }
         }
+    }
+
+    @Override
+    public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) {
+        mCircleRadius.remove();
+        mCircleRadius = mGoogleMap.addCircle(new CircleOptions().center(new LatLng(Utils.CURRENT_LOCATION.getLatitude(),Utils.CURRENT_LOCATION.getLongitude())).radius(i*1000));
+    }
+
+    @Override
+    public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+
     }
 }
